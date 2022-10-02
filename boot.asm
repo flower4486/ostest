@@ -50,10 +50,10 @@ BaseOfLoader              equ 09000h  ; LOADER.BIN 被加载到的位置 ---- �
 OffsetOfLoader            equ 0400h   ; LOADER.BIN 被加载到的位置 ---- 偏移地址
 
 ; 这部分请看手册
-RootDirSectors            equ 14  ;根目录占用的空间，因为公式太长故定义此宏
-SectorNoOfRootDirectory   equ 19  ;根目录第一个扇区号
-SectorNoOfFAT1            equ 1   ;FAT1的第一个扇区号
-DeltaSectorNo             equ 31  ;文件开始的额扇区号
+RootDirSectors            equ 14  ;
+SectorNoOfRootDirectory   equ 19
+SectorNoOfFAT1            equ 1
+DeltaSectorNo             equ 31
 ;================================================================================================
 
 ;============================================================================
@@ -156,7 +156,7 @@ ReadSector:
     pop    bp
     ret
 
-.ReadFail
+.ReadFail:
     mov    dh, 2
     call   DispStr
     jmp    $                     ; 如果cf位置1，就意味着读入错误，这个时候建议直接开摆
@@ -166,7 +166,7 @@ ReadSector:
 ;----------------------------------------------------------------------------
 ; 作用:
 ;    ax存放的是当前的簇(cluster)号，根据当前的簇号在fat表里查找，找到下一个簇的簇号，并将返回值存放在ax
-GetNextCluster:
+GetNextCluster: 
     push   bp
     mov    bp, sp
     pusha

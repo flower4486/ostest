@@ -13,9 +13,10 @@ everything : $(BOOT_BIN) $(LDR_BIN)
 	@dd if=/dev/zero of=a.img bs=512 count=2880
 	@mkfs -t vfat a.img
 	@dd if=$(BOOT_BIN) of=a.img bs=512 count=1 conv=notrunc
-	@sudo mount -o loop a.img /mnt
-	@sudo cp $(LDR_BIN) /mnt -v
-	@sudo umount /mnt
+	@ mount -o loop a.img /mnt
+	@ cp $(LDR_BIN) /mnt -v
+	@ umount /mnt
+	@ qemu-system-x86_64 -boot order=c -drive file=a.img,format=raw
 
 clean :
 	@rm -f $(BOOT_BIN) $(LDR_BIN)
@@ -40,6 +41,11 @@ gdb:
 
 monitor:
 	@gdb				\
-	-ex 'set tdesc filename target.xml' \
-	-ex 'target remote localhost:1234'
+	-ex 'set architecture i8086' \
+	-ex 'target remote localhost:1234' \
+	-ex 'b *0x9400' 
+	
+bin:
+	@nasm boot.asm -o boot.bin 
+	@nasm loader.asm -o loader.bin
 

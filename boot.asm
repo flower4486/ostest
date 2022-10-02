@@ -50,10 +50,10 @@ BaseOfLoader              equ 09000h  ; LOADER.BIN 被加载到的位置 ---- �
 OffsetOfLoader            equ 0400h   ; LOADER.BIN 被加载到的位置 ---- 偏移地址
 
 ; 这部分请看手册
-RootDirSectors            equ 14
-SectorNoOfRootDirectory   equ 19
-SectorNoOfFAT1            equ 1
-DeltaSectorNo             equ 31
+RootDirSectors            equ 14  ;根目录占用的空间，因为公式太长故定义此宏
+SectorNoOfRootDirectory   equ 19  ;根目录第一个扇区号
+SectorNoOfFAT1            equ 1   ;FAT1的第一个扇区号
+DeltaSectorNo             equ 31  ;文件开始的额扇区号
 ;================================================================================================
 
 ;============================================================================

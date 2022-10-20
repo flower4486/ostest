@@ -117,7 +117,11 @@ monitor: $(KERNBIN)
 	@gdb                            	\
 	-ex 'set confirm off'			\
 	-ex 'target remote localhost:1234'	\
-	-ex 'file $(KERNBIN)'			
+	-ex 'file $(KERNBIN)'			\
+	-ex 'layout asm'			\
+	-ex 'layout regs'			\
+	-ex 'b *0x30a46'				\
+	-ex 'c'						
 
 # 测试%s
 tests:

@@ -58,20 +58,16 @@ _start:
 	;
 
 	; 将选择子加载到gs段寄存器
-	
-	mov ah, 00fh; 黑底白字
-	mov al, 'k'
-	mov [gs:80 * 2], ax; 往1行0列写入一个黑底白字的字符A
-	mov al, 'e'
-	mov [gs:81 * 2], ax;
-	mov al, 'r'
-	mov [gs:82 * 2], ax;
-	mov al, 'n'
-	mov [gs:83 * 2], ax;
-	mov al, 'e'
-	mov [gs:84 * 2], ax;
-	mov al, 'l'
-	mov [gs:85 * 2], ax;
+	str:      db     'kernel'
+	mov ebx,0
+	mov ecx,6
+	mov edi,str
+	.1:
+	 mov ah,00fh
+	 mov al,[edi+ebx*1]
+	 mov [gs:(80+ebx)*2],ax
+	 add ebx,1
+	 loop .1
 
 	; 把 esp 从 LOADER 挪到 KERNEL
 	mov	esp, StackTop	; 堆栈在 bss 段中

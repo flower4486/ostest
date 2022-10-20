@@ -147,8 +147,10 @@ load_kernel()
 	Elf32_Phdr *kernel_phdr = (void *)kernel_ehdr + kernel_ehdr->e_phoff;
 	for (u32 i = 0; i < kernel_ehdr->e_phnum; i++, kernel_phdr++)
 	{
+
 		if (kernel_phdr->p_type != PT_LOAD)
 			continue;
+		
 		// 将elf的文件数据复制到指定位置
 		memcpy(
 		    (void *)kernel_phdr->p_vaddr,

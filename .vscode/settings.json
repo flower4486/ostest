@@ -1,0 +1,12 @@
+{
+    "editor.detectIndentation": false,
+    "editor.tabSize": 8,
+    "editor.insertSpaces": false,
+    "files.associations": {
+	"string.h": "c",
+	"type.h": "c",
+	"terminal.h": "c",
+	"stdarg.h": "c",
+	"cmatrix.h": "c"
+}
+}

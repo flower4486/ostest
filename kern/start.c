@@ -3,9 +3,12 @@
 #include "string.h"
 #include "cmatrix.h"
 #include "terminal.h"
+#define TESTS 1
 
 u8 gdt_ptr[6]; /* 0~15:Limit  16~47:Base */
 DESCRIPTOR gdt[GDT_SIZE];
+
+//extern void kprintf(u16 disp_pos, const char *format, ...);
 
 void cstart()
 {
@@ -53,4 +56,5 @@ void cstart()
 			GREEN, YELLOW, *(s1 + 0), c1, *(s1 + 1), c2);
 	} 
 #endif
+cmatrix_start();
 }

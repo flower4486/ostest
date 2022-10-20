@@ -1,8 +1,10 @@
 SELECTOR_KERNEL_CS	equ	8
 
-; 导入函数
+
+; 导入函数  
 extern	cstart
 
+  
 ; 导入全局变量
 extern	gdt_ptr
 
@@ -55,6 +57,21 @@ _start:
 	;
 	;
 
+	; 将选择子加载到gs段寄存器
+	
+	mov ah, 00fh; 黑底白字
+	mov al, 'k'
+	mov [gs:80 * 2], ax; 往1行0列写入一个黑底白字的字符A
+	mov al, 'e'
+	mov [gs:81 * 2], ax;
+	mov al, 'r'
+	mov [gs:82 * 2], ax;
+	mov al, 'n'
+	mov [gs:83 * 2], ax;
+	mov al, 'e'
+	mov [gs:84 * 2], ax;
+	mov al, 'l'
+	mov [gs:85 * 2], ax;
 
 	; 把 esp 从 LOADER 挪到 KERNEL
 	mov	esp, StackTop	; 堆栈在 bss 段中
@@ -70,4 +87,6 @@ csinit:		; “这个跳转指令强制使用刚刚初始化的结构”——<<O
 	push	0
 	popfd	; Pop top of stack into EFLAGS
 
+
 	hlt
+

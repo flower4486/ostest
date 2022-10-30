@@ -6,17 +6,18 @@
 #include "type.h"
 #include "trap.h"
 #include "x86.h"
-
+#include "game.h"
 /*
  * 三个测试函数，用户进程的执行流
  */
 void TestA()
 {
 	int i = 0;
+	
 	while(1){
-		kprintf("A%d.",i++);
-		for (int j = 0 ; j < 5e7 ; j++)
-			;//do nothing
+		//kprintf("A%d.",i++);
+		kprintf("A",i++);
+		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }
 
@@ -24,9 +25,9 @@ void TestB()
 {
 	int i = 0;
 	while(1){
-		kprintf("B%d.",i++);
-		for (int j = 0 ; j < 5e7 ; j++)
-			;//do nothing
+		//kprintf("B%d.",i++);
+		kprintf("B",i++);
+		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }
 
@@ -34,9 +35,9 @@ void TestC()
 {
 	int i = 0;
 	while(1){
-		kprintf("C%d.",i++);
-		for (int j = 0 ; j < 5e7 ; j++)
-			;//do nothing
+		//kprintf("C%d.",i++);
+		kprintf("C",i++);
+		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }
 
@@ -50,7 +51,8 @@ PROCESS *p_proc_ready;
 // pcb表
 PROCESS	proc_table[PCB_SIZE];
 void (*entry[]) = {
-	TestA,
+	//TestA,
+	startGame,
 	TestB,
 	TestC,
 };
@@ -66,6 +68,9 @@ char pcb_name[][16] = {
  */
 void kernel_main()
 {
+	out_byte(TIMER_MODE,RATE_GENERATOR);
+	out_byte(TIMER0,(u8)(TIMER_FREQ/HZ));
+	out_byte(TIMER0,(u8)((TIMER_FREQ/HZ)>>8));
 	kprintf("---start kernel main---\n");
 
 	PROCESS *p_proc = proc_table;
@@ -95,7 +100,9 @@ void kernel_main()
 	p_proc_ready = proc_table;
 
 	enable_irq(CLOCK_IRQ);
+	enable_irq(KEYBOARD_IRQ);
 
+	
 	restart();
 	assert(0);
 }

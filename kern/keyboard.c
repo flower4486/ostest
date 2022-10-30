@@ -23,14 +23,42 @@ static KB_INPUT kb_input = {
 void
 add_keyboard_buf(u8 ch)
 {
+	if (kb_input.count==4)
+	{
+		kb_input.p_head=kb_input.buf;
+		kb_input.p_tail=kb_input.buf;
+		kb_input.count=0;
+	}
+	
+	*kb_input.p_tail=ch;
+	kb_input.p_tail++;
+	kb_input.count++;
+	//kprintf("%c",ch);
+	// for (int i = 0; i <= 3; i++)
+	// {
+	// 	kprintf("%c",kb_input.buf[i]);
+	// }
+	// kprintf("%d",kb_input.count);
+	
+	
 }
 
 /*
  * 如果内核的字符缓冲区为空，则返回-1
  * 否则返回缓冲区队头的字符并弹出队头
  */
+u8 c;
 u8
 getch(void)
 {
-	return -1;
+	if (kb_input.p_head==kb_input.p_tail)
+	{
+		return -1;
+	}else
+	{
+		c=*kb_input.p_head;
+		//kprintf("%c",c);
+		 kb_input.p_head++;
+		 return c;
+	}
 }

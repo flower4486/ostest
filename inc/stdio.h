@@ -3,7 +3,7 @@
 
 #include "type.h"
 #include "stdarg.h"
-
+#include "keyboard.h"
 #ifndef NULL
 #define NULL	((void *) 0)
 #endif /* NULL */

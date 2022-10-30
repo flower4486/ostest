@@ -72,8 +72,18 @@ void	exception_handler(int vec_no, int err_code, int eip,
 /* 外设中断实际处理函数(C接口) */
 void	default_interrupt_handler(int irq);
 void	clock_interrupt_handler(int irq);
-
+void    keyboard_interrupt_handler(int irq);
 /* 外设中断实际处理函数表 */
 extern void (*irq_table[])(int);
 
 #endif /* MINIOS_TRAP_H */
+
+void	out_byte(u16 port, u8 value);
+u8	in_byte(u16 port);
+
+
+#define TIMER0  0X40
+#define  TIMER_MODE  0X43
+#define  RATE_GENERATOR 0X34
+#define TIMER_FREQ   1193182L
+#define HZ        1000

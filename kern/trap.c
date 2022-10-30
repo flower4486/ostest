@@ -4,7 +4,7 @@
 #include "time.h"
 #include "trap.h"
 #include "x86.h"
-
+#include "keymap.h"
 /*
  * 当前内核需要处理中断的数量
  */
@@ -12,7 +12,7 @@ int k_reenter;
 
 void (*irq_table[16])(int) = {
 	clock_interrupt_handler,
-	default_interrupt_handler,
+	keyboard_interrupt_handler,
 	default_interrupt_handler,
 	default_interrupt_handler,
 	default_interrupt_handler,
@@ -98,13 +98,46 @@ exception_handler(int vec_no, int err_code, int eip, int cs, int eflags)
 /*
  * 时钟中断处理函数
  */
+
 void
 clock_interrupt_handler(int irq)
 {
-	kprintf("#");
+	//u8 c=getch();
+	//if (c!=255)
+	{
+	//	kprintf("%c",c);
+	}
+	//static int i=0;
+	//kprintf("%d",i++);
+	//kprintf(" ");
 	timecounter_inc();
-	p_proc_ready++;
+	static int flag=0;
+	//kprintf("flag=%d",flag);
+	// if (p_proc_ready==proc_table&&flag==1)
+	// {
+		
+	// 	p_proc_ready=p_proc_ready+1+flag;//ignore process2
+	// 	flag=0;
+	// }else{
+	// 	p_proc_ready=p_proc_ready+1+flag;//next process
+	// 	flag=1;
+	// }
 	if (p_proc_ready >= proc_table + PCB_SIZE) {
 		p_proc_ready = proc_table;
+	}//return to the first process
+}
+u8 getchar;
+//键盘中断处理函数
+void
+keyboard_interrupt_handler(int irq){
+	//kprintf("*");
+	u8 scan_code=in_byte(0x60);
+	if (scan_code>1&&scan_code<=50)
+	{
+		//kprintf("%c",keymap[scan_code]);
+		add_keyboard_buf(keymap[scan_code]);
 	}
+	
+	return;
+
 }

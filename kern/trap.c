@@ -113,15 +113,15 @@ clock_interrupt_handler(int irq)
 	timecounter_inc();
 	static int flag=0;
 	//kprintf("flag=%d",flag);
-	// if (p_proc_ready==proc_table&&flag==1)
-	// {
+	//if (p_proc_ready==proc_table&&flag==1)
+	//{
 		
-	// 	p_proc_ready=p_proc_ready+1+flag;//ignore process2
-	// 	flag=0;
-	// }else{
-	// 	p_proc_ready=p_proc_ready+1+flag;//next process
-	// 	flag=1;
-	// }
+	//	p_proc_ready=p_proc_ready+1+flag;//ignore process2
+	//	flag=0;
+	//}else{
+	//	p_proc_ready=p_proc_ready+1;//next process
+	//	flag=1;
+	//}
 	if (p_proc_ready >= proc_table + PCB_SIZE) {
 		p_proc_ready = proc_table;
 	}//return to the first process

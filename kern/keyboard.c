@@ -29,18 +29,9 @@ add_keyboard_buf(u8 ch)
 		kb_input.p_tail=kb_input.buf;
 		kb_input.count=0;
 	}
-	
 	*kb_input.p_tail=ch;
 	kb_input.p_tail++;
-	kb_input.count++;
-	//kprintf("%c",ch);
-	// for (int i = 0; i <= 3; i++)
-	// {
-	// 	kprintf("%c",kb_input.buf[i]);
-	// }
-	// kprintf("%d",kb_input.count);
-	
-	
+	kb_input.count++;	
 }
 
 /*

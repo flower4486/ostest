@@ -16,7 +16,7 @@ void TestA()
 	
 	while(1){
 		//kprintf("A%d.",i++);
-		kprintf("A",i++);
+		//kprintf("A.",i++);
 		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }
@@ -26,7 +26,7 @@ void TestB()
 	int i = 0;
 	while(1){
 		//kprintf("B%d.",i++);
-		kprintf("B",i++);
+		//kprintf("B.",i++);
 		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }
@@ -36,7 +36,7 @@ void TestC()
 	int i = 0;
 	while(1){
 		//kprintf("C%d.",i++);
-		kprintf("C",i++);
+		//kprintf("C.",i++);
 		for (int j = 0 ; j < 5e7 ; j++);//do nothing
 	}
 }

@@ -5,6 +5,11 @@
 	"files.associations": {
 		"*.h": "c",
 		"*.c": "c",
+<<<<<<< HEAD
 		"*.asm": "nasm"
+=======
+		"*.asm": "nasm",
+		"Makefrag": "makefile"
+>>>>>>> 4debbf1121fc60bb33aa66ccd4e89cd268e3d62b
 	}
 }

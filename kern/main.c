@@ -3,7 +3,7 @@
 #include <string.h>
 #include <type.h>
 #include <x86.h>
-
+#include<elf.h>
 #include <kern/fs.h>
 #include <kern/kmalloc.h>
 #include <kern/stdio.h>

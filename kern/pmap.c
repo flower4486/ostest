@@ -16,7 +16,7 @@ map_kern(phyaddr_t cr3)
 	uintptr_t *pde_ptr = (uintptr_t *)K_PHY2LIN(cr3);
 	// 基地址在3GB处
 	pde_ptr += PDX(3 * GB);
-	// 一个页目录项映射4MB的内存，计算需要初始化的页目录项数目
+	// 一个页目录项映射4MB的内存，
 	int pde_num = (128 * MB) / (4 * MB);
 	// 被映射的物理地址
 	phyaddr_t phy_addr = 0;

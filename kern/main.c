@@ -36,7 +36,21 @@ init_segment_regs(PROCESS *p_proc)
 	p_proc->pcb.user_regs.gs = (SELECTOR_VIDEO & SA_RPL_MASK & SA_TI_MASK)
 		| RPL_USER;
 }
-
+u32 load_elf(phyaddr_t cr3,void* load_addr)
+{
+	
+	struct Elf* elfheader=load_addr;
+	struct Proghdr* progheader =(struct Proghdr *)((u8 *)load_addr+elfheader->e_phoff);
+	int load_num = elfheader->e_phnum;
+	map_user(cr3,progheader->p_va);
+	load_num-=1;
+	while (load_num--)
+	{
+		memcpy((void*)progheader->p_va,(void*)((u8 *)load_addr+progheader->p_offset),progheader->p_filesz);
+		progheader++;
+	}
+	return elfheader->e_entry;
+}
 /*
  * 内核的main函数
  * 用于初始化用户进程，然后将执行流交给用户进程
@@ -58,23 +72,28 @@ void kernel_main(void)
 		// 就可以直接lcr3，于此同时执行流不会触发page fault
 		// 如果不先map_kern，执行流会发现执行的代码的线性地址不存在爆出Page Fault
 		// 当然选不选择看个人的想法，评价是都行，各有各的优缺点
-		// lcr3(p_proc->pcb.cr3);
+		 lcr3(p_proc->pcb.cr3);
 		
 		static char filename[PCB_SIZE][12] = {
-			"TESTPID BIN",
-			"TESTKEY BIN",	
+			// "TESTPID BIN",
+			// "TESTKEY BIN",
+			"DELAY   BIN",
+			"DELAY   BIN",
+			"DELAY   BIN"
 		};
 		// 从磁盘中将文件读出，需要注意的是要满足短目录项的文件名长度11，
 		// 前八个为文件名，后三个为后缀名，跟BootLoader做法一致
 		// 推荐将文件加载到3GB + 48MB处，应用程序保证不会有16MB那么大
 		read_file(filename[i], (void *)K_PHY2LIN(48 * MB));
 		// 现在你就需要将从磁盘中读出的ELF文件解析到用户进程的地址空间中
-		panic("unimplement! load elf file");
-		
+		//panic("unimplement! load elf file");
+		p_proc->pcb.user_regs.eip = load_elf(p_proc->pcb.cr3,(void*)K_PHY2LIN(48*MB));
 		// 上一个实验中，我们开栈是用内核中的一个数组临时充当栈
 		// 但是现在就不行了，用户是无法访问内核的地址空间（3GB ~ 3GB + 128MB）
 		// 需要你自行处理给用户分配用户栈。
-		panic("unimplement! init user stack and esp");
+		//panic("unimplement! init user stack and esp");
+		map_user_stack(p_proc->pcb.cr3);
+		p_proc->pcb.user_regs.esp = 3*GB-4;
 		// 初始化用户寄存器
 		p_proc->pcb.user_regs.eflags = 0x1202; /* IF=1, IOPL=1 */
 		
@@ -95,7 +114,7 @@ void kernel_main(void)
 
 		// 初始化其余量
 		p_proc->pcb.pid = i;
-		static int priority_table[PCB_SIZE] = {1, 2};
+		static int priority_table[PCB_SIZE] = {1, 2,3};
 		// priority 预计给每个进程分配的时间片
 		// ticks 进程剩余的进程片
 		p_proc->pcb.priority = p_proc->pcb.ticks = priority_table[i];

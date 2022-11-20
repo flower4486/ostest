@@ -114,3 +114,8 @@ write(int fd, const void *buf, size_t count)
 {
 	return syscall3(_NR_write, fd, (size_t)buf, count);
 }
+
+ssize_t
+delay_ticks(u32 ticks){
+	return syscall1(_NR_delay_ticks,ticks);
+}

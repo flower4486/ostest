@@ -28,3 +28,17 @@ do_get_ticks(void)
 {
 	return (ssize_t)kern_get_ticks();
 }
+ssize_t do_delay_ticks(size_t ticks)
+{
+	size_t timecounter1;
+	size_t timecounter0 =kern_get_ticks();
+	while (true)
+	{
+		timecounter1 = kern_get_ticks();
+		if(timecounter1-timecounter0>=ticks)
+		{
+			break;
+		}
+	}
+	return 0;
+}

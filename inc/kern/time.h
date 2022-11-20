@@ -5,5 +5,4 @@
 
 void	timecounter_inc(void);
 size_t	kern_get_ticks(void);
-
 #endif /* MINIOS_KERN_TIME_H */

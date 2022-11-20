@@ -16,6 +16,7 @@ extern ssize_t (*syscall_table[])(void);
 
 // kern/time.c
 ssize_t	do_get_ticks(void);
+ssize_t do_delay_ticks(size_t ticks);
 // kern/process.c
 ssize_t	do_get_pid(void);
 // kern/fs.c

@@ -44,3 +44,47 @@ map_kern(phyaddr_t cr3)
 	// 经常assert是个好习惯
 	assert(phy_addr == 128 * MB);
 }
+void
+map_user(phyaddr_t cr3,u32 addr_to_map)
+{
+	uintptr_t *pde_ptr=(uintptr_t *)K_PHY2LIN(cr3);
+
+	pde_ptr+=PDX(addr_to_map);
+
+	phyaddr_t phy_addr=0;
+
+	phyaddr_t pte_phy=phy_malloc_4k();
+
+	assert(PGOFF(pte_phy)==0);
+
+	*pde_ptr =pte_phy | PTE_P | PTE_W | PTE_U;
+
+	uintptr_t *pte_ptr=(uintptr_t *)K_PHY2LIN(pte_phy);
+	pte_ptr+=PTX(addr_to_map);
+
+	for (int i = 0; i < 6; i++)
+	{
+		phy_addr=phy_malloc_4k();
+		*pte_ptr++=phy_addr|PTE_P |PTE_W|PTE_U;
+	}
+	
+}
+
+void
+map_user_stack(phyaddr_t cr3)
+{
+	uintptr_t *pde_ptr=(uintptr_t *)K_PHY2LIN(cr3);
+	pde_ptr+=PDX(3*GB-4*KB);
+	phyaddr_t pte_phy = phy_malloc_4k();
+
+	assert(PGOFF(pte_phy)==0);
+
+	*pde_ptr = pte_phy | PTE_P |PTE_W |PTE_U;
+
+	uintptr_t *pte_ptr=(uintptr_t *)K_PHY2LIN(pte_phy);
+
+	pte_ptr +=PTX(3*GB-4*KB);
+	phyaddr_t phy_addr = phy_malloc_4k();
+
+	*pte_ptr=phy_addr |PTE_P |PTE_W |PTE_U;
+}

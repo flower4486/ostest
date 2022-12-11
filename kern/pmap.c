@@ -2,7 +2,7 @@
 #include <elf.h>
 #include <string.h>
 #include <mmu.h>
-
+#include <x86.h>
 #include <kern/kmalloc.h>
 #include <kern/pmap.h>
 
@@ -10,7 +10,7 @@
  * 申请一个新的物理页，并更新page_list页面信息
  * 返回新申请的物理页面的物理地址
  */
-static phyaddr_t
+phyaddr_t
 alloc_phy_page(struct page_node **page_list)
 {
 	phyaddr_t paddr = phy_malloc_4k();
@@ -30,7 +30,7 @@ alloc_phy_page(struct page_node **page_list)
  * 并将pte_flag置位到页表项（页目录项标志位默认为PTE_P | PTE_W | PTE_U）
  * 这个函数中所有新申请到的页面信息会存放到page_list这个链表中
  */
-static void
+void
 lin_mapping_phy(u32			cr3,
 		struct page_node	**page_list,
 		uintptr_t		laddr,
@@ -42,19 +42,24 @@ lin_mapping_phy(u32			cr3,
 	uintptr_t *pde_ptr = (uintptr_t *)K_PHY2LIN(cr3);
 
 	if ((pde_ptr[PDX(laddr)] & PTE_P) == 0) {
+		// 申请一页内存，并将其信息放入 page_list
 		phyaddr_t pte_phy = alloc_phy_page(page_list);
+		// 将该页内存全部设置为0
 		memset((void *)K_PHY2LIN(pte_phy), 0, PGSIZE);
+		// 设置页目录中的页表项的尾部内容
 		pde_ptr[PDX(laddr)] = pte_phy | PTE_P | PTE_W | PTE_U;
 	}
 
 	phyaddr_t pte_phy = PTE_ADDR(pde_ptr[PDX(laddr)]);
 	uintptr_t *pte_ptr = (uintptr_t *)K_PHY2LIN(pte_phy);
-
+	// 下面申请 页
 	phyaddr_t page_phy;
 	if (paddr == (phyaddr_t)-1) {
 		if ((pte_ptr[PTX(laddr)] & PTE_P) != 0)
 			return;
+		// 申请一个新的物理页，page_phy指向新物理页的首地址
 		page_phy = alloc_phy_page(page_list);
+		// laddr哪来的？答：函数参数。
 		(*page_list)->laddr = laddr;
 		
 	} else {

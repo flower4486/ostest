@@ -52,12 +52,7 @@ kern_wait(int *wstatus)
 			schedule();
 
 		struct son_node *sons = p_proc_ready->pcb.fork_tree.sons;
-		if (sons == NULL)
-		{
-			p_proc_ready->pcb.statu = SLEEP;
-			xchg(&p_proc_ready->pcb.lock, 0);
-			schedule();
-		}
+		
 		while (sons != NULL)
 		{
 			while(xchg(&sons->p_son->lock, 1) == 1)
@@ -87,7 +82,12 @@ kern_wait(int *wstatus)
 			xchg(&sons->p_son->lock, 0);
 			sons = sons->nxt;
 		}
-
+		if (sons == NULL)
+		{
+			p_proc_ready->pcb.statu = SLEEP;
+			xchg(&p_proc_ready->pcb.lock, 0);
+			schedule();
+		}
 	}
 	xchg(&p_proc_ready->pcb.lock, 0);	
 	return ret;
